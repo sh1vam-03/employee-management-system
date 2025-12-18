@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { initialAttendanceHistory } from '../data/mockData';
 import { useAuth } from './AuthContext';
+import { useAlert } from './AlertContext';
 
 export const AttendanceContext = createContext();
 
@@ -10,6 +11,7 @@ export function useAttendance() {
 
 export function AttendanceProvider({ children }) {
     const { currentUser } = useAuth();
+    const { showAlert } = useAlert();
     const [attendanceHistory, setAttendanceHistory] = useState(initialAttendanceHistory);
     const [loading, setLoading] = useState(true);
 
@@ -17,9 +19,19 @@ export function AttendanceProvider({ children }) {
         const load = () => {
             try {
                 const stored = localStorage.getItem('attendanceHistory');
-                if (stored) setAttendanceHistory(JSON.parse(stored));
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    // Merge new initial history if not present (simple ID check)
+                    const uniqueNew = initialAttendanceHistory.filter(init =>
+                        !parsed.some(p => p.id === init.id)
+                    );
+                    setAttendanceHistory([...parsed, ...uniqueNew]);
+                } else {
+                    setAttendanceHistory(initialAttendanceHistory);
+                }
             } catch (e) {
                 console.error("Attendance load failed", e);
+                setAttendanceHistory(initialAttendanceHistory);
             } finally {
                 setLoading(false);
             }
@@ -31,20 +43,28 @@ export function AttendanceProvider({ children }) {
         if (!loading) localStorage.setItem('attendanceHistory', JSON.stringify(attendanceHistory));
     }, [attendanceHistory, loading]);
 
+
     const markAttendance = (status) => {
         if (!currentUser) return;
-        const timestamp = new Date().toLocaleTimeString();
-        const today = new Date().toLocaleDateString();
+        // Use consistent 12-hour format with AM/PM to match mock data
+        const timestamp = new Date().toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+        // Use YYYY-MM-DD to match mock data and ensure correct parsing
+        const today = new Date().toISOString().split('T')[0];
 
         const todayRecord = attendanceHistory.find(r => r.empId === currentUser.id && r.date === today);
 
         if (status === 'Check In') {
             if (todayRecord && !todayRecord.checkOut) {
-                alert('You are already checked in for today!');
+                showAlert('You are already checked in for today!', 'error');
                 return;
             }
             if (todayRecord && todayRecord.checkOut) {
-                alert('You have already completed your shift for today!');
+                showAlert('You have already completed your shift for today!', 'warning');
                 return;
             }
 
@@ -52,11 +72,11 @@ export function AttendanceProvider({ children }) {
                 ...prev,
                 { id: Date.now(), empId: currentUser.id, date: today, checkIn: timestamp, checkOut: null, status: 'Present' }
             ]);
-            alert(`Successfully Checked In at ${timestamp}`);
+            showAlert(`Successfully Checked In at ${timestamp}`, 'success');
 
         } else if (status === 'Check Out') {
             if (!todayRecord || todayRecord.checkOut) {
-                alert('You must Check In first!');
+                showAlert('You must Check In first!', 'error');
                 return;
             }
 
@@ -67,13 +87,13 @@ export function AttendanceProvider({ children }) {
                         : record
                 )
             );
-            alert(`Successfully Checked Out at ${timestamp}`);
+            showAlert(`Successfully Checked Out at ${timestamp}`, 'success');
         }
     };
 
     const getTodayStatus = () => {
         if (!currentUser) return 'Not Started';
-        const today = new Date().toLocaleDateString();
+        const today = new Date().toISOString().split('T')[0];
         const record = attendanceHistory.find(r => r.empId === currentUser.id && r.date === today);
 
         if (!record) return 'Not Started';

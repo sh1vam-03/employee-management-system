@@ -4,61 +4,135 @@ import jsPDF from 'jspdf';
 export const generatePaySlip = (data) => {
     const doc = new jsPDF();
 
-    // Title
-    doc.setFontSize(20);
-    doc.setTextColor(40);
+    // 1. Header
+    doc.setFontSize(22);
+    doc.setTextColor(33, 37, 41); // Dark Gray
+    doc.setFont("helvetica", "bold");
     doc.text("Monthly Payroll Report", 105, 20, null, null, "center");
 
-    // Line separator
+    // Divider
     doc.setLineWidth(0.5);
-    doc.line(20, 25, 190, 25);
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, 28, 190, 28);
 
-    // Employee Details Section
-    doc.setFontSize(12);
-    doc.setTextColor(60);
-
-    const startX = 20;
-    let startY = 40;
+    // 2. Employee Details
+    let startY = 45;
+    const leftColX = 20;
+    const valueColX = 70;
     const lineHeight = 10;
 
-    // Helper to add a row
-    const addRow = (label, value) => {
+    doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+
+    const addDetailRow = (label, value) => {
         doc.setFont("helvetica", "bold");
-        doc.text(`${label}:`, startX, startY);
+        doc.text(label, leftColX, startY);
         doc.setFont("helvetica", "normal");
-        doc.text(`${value}`, startX + 50, startY);
+        doc.text(`:  ${value}`, valueColX, startY);
         startY += lineHeight;
     };
 
-    addRow("Name", data.name);
-    addRow("Employee ID", data.empId);
-    addRow("Department", data.department || "N/A");
-    addRow("Role", data.role || "N/A");
-    addRow("Month/Year", `${data.month} ${data.year}`);
+    addDetailRow("Employee Name", data.name);
+    addDetailRow("Employee ID", data.empId);
+    addDetailRow("Department", data.department || "N/A");
+    addDetailRow("Role", data.role || "N/A");
 
-    // Financials
-    startY += 5; // Extra spacing
-    doc.setLineWidth(0.2);
-    doc.line(20, startY - 5, 190, startY - 5);
-
-    addRow("Days Present", `${data.daysPresent} Days`);
-    addRow("Basic Salary", `INR ${data.basicSalary.toLocaleString()}`);
-
-    // Net Salary Highlight
+    // Spacer
     startY += 5;
+    addDetailRow("Payroll Month", `${data.month} ${data.year}`);
+
+    // 3. Attendance Summary Section
+    startY += 10;
     doc.setFontSize(14);
-    doc.setTextColor(0, 100, 0); // Green color
     doc.setFont("helvetica", "bold");
-    doc.text("Net Salary:", startX, startY);
-    doc.text(`INR ${data.netSalary.toLocaleString()}`, startX + 50, startY);
+    doc.setTextColor(0, 80, 150); // Muted Blue
+    doc.text("Attendance Summary", leftColX, startY);
+
+    startY += 12;
+    doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+
+    addDetailRow("Total Working Days", `${data.totalWorkingDays} (Standard Month)`);
+    addDetailRow("Days Present", `${data.daysPresent}`);
+
+    // 4. Salary Breakdown Section
+    startY += 10;
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 128, 0); // Green
+    doc.text("Salary Breakdown", leftColX, startY);
+
+    startY += 12;
+    doc.setFontSize(11);
+    doc.setTextColor(50, 50, 50);
+
+    addDetailRow("Monthly Basic Salary", `INR ${data.basicSalary.toLocaleString()}`);
+    addDetailRow("Per Day Salary", `INR ${data.perDaySalary.toLocaleString()}`);
+
+    // Net Salary Box
+    startY += 10;
+    doc.setDrawColor(0, 128, 0);
+    doc.setLineWidth(0.5);
+    doc.rect(leftColX, startY - 5, 170, 15); // Border box
+
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 100, 0);
+    doc.text("Net Salary Payable", leftColX + 5, startY + 4);
+
+    doc.setFontSize(14);
+    doc.text(`INR ${data.netSalary.toLocaleString()}`, 140, startY + 4);
+
+    // 5. Notes Section
+    startY += 25;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(33, 37, 41);
+    doc.text("Notes", leftColX, startY);
+
+    startY += 7;
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(80, 80, 80);
+
+    const notes = [
+        "Salary calculated based on attendance",
+        "Attendance captured via RFID/NFC (simulated)",
+        "This is a system-generated payroll report"
+    ];
+
+    notes.forEach(note => {
+        doc.text(`• ${note}`, leftColX + 5, startY);
+        startY += 6;
+    });
+
+    // 6. Authorized By Section
+    startY += 10;
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(33, 37, 41);
+    doc.text("Authorized By", leftColX, startY);
+
+    startY += 10;
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 0);
+
+    // Determine authorizer based on data.generatedBy
+    const authorizer = data.generatedBy === 'HR' ? 'HR Department' : 'Admin';
+    doc.text(authorizer, leftColX + 5, startY);
+
+    doc.setLineWidth(0.5);
+    doc.line(leftColX + 5, startY + 2, leftColX + 33, startY + 2); // Underline signature
 
     // Footer
     const pageHeight = doc.internal.pageSize.height;
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setTextColor(150);
+    doc.setFont("helvetica", "italic");
     doc.text("Generated by Employee Management System", 105, pageHeight - 10, null, null, "center");
 
-    // Save File
+    // Save
     const filename = `PaySlip_${data.month}_${data.year}_${data.empId}.pdf`;
     doc.save(filename);
 };

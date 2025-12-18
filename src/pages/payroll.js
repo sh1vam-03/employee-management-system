@@ -3,6 +3,7 @@ import Navbar from "../components/common/Navbar";
 import { useAuth } from '../context/AuthContext';
 import { useEmployees } from '../context/EmployeeContext';
 import { useAttendance } from '../context/AttendanceContext';
+import { useAlert } from '../context/AlertContext';
 import { useRouter } from 'next/router';
 import { generatePaySlip } from '../utils/pdfGenerator';
 import { calculateNetSalary } from '../utils/salaryCalculator';
@@ -11,6 +12,7 @@ export default function Payroll() {
     const { currentUser, loading: authLoading } = useAuth();
     const { employees } = useEmployees();
     const { attendanceHistory, calculatePresentDays } = useAttendance();
+    const { showAlert } = useAlert();
     const router = useRouter();
     const [isGenerating, setIsGenerating] = useState(false);
     const [payrolls, setPayrolls] = useState([]);
@@ -63,22 +65,29 @@ export default function Payroll() {
                 const daysPresent = calculatePresentDays(emp.id, currentMonth, currentYear);
                 const netSalary = calculateNetSalary(emp.salary, daysPresent);
 
+                const perDaySalary = Math.round(emp.salary / 30);
+
                 return {
                     id: `${emp.id}-${currentMonth}-${currentYear}`,
                     empId: emp.id,
                     name: emp.name,
+                    department: emp.department,
+                    role: emp.role,
                     month: currentMonth,
                     year: currentYear,
                     basicSalary: emp.salary,
+                    perDaySalary: perDaySalary,
+                    totalWorkingDays: 30, // Standardized for calculation
                     daysPresent: daysPresent,
-                    netSalary: netSalary
+                    netSalary: netSalary,
+                    generatedBy: currentUser.role // Track who generated this for the PDF
                 };
             });
 
             setPayrolls(newPayrolls);
             setIsGenerating(false);
             if (newPayrolls.length > 0) {
-                alert(`Payroll generated for ${newPayrolls.length} employees!`);
+                showAlert(`Payroll generated for ${newPayrolls.length} employees!`, 'success');
             }
         }, 1500);
     };
@@ -87,8 +96,9 @@ export default function Payroll() {
         const slip = payrolls.find(p => p.id === id);
         if (slip) {
             generatePaySlip(slip);
+            showAlert('Pay slip downloaded successfully!', 'success');
         } else {
-            alert("Error: Pay slip not found!");
+            showAlert("Error: Pay slip not found!", 'error');
         }
     };
 

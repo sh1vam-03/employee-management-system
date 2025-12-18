@@ -4,6 +4,7 @@ import Navbar from "../components/common/Navbar";
 import { useAuth } from '../context/AuthContext';
 import { useEmployees } from '../context/EmployeeContext';
 import { useTasks } from '../context/TaskContext';
+import { useAlert } from '../context/AlertContext';
 import { useRouter } from 'next/router';
 import TaskForm from '../components/tasks/TaskForm';
 import TaskList from '../components/tasks/TaskList';
@@ -12,6 +13,7 @@ export default function Tasks() {
     const { currentUser, loading: authLoading } = useAuth();
     const { employees } = useEmployees();
     const { tasks, assignTask, updateTaskStatus } = useTasks();
+    const { showAlert } = useAlert();
     const router = useRouter();
 
     useEffect(() => {
@@ -36,7 +38,7 @@ export default function Tasks() {
     // Add Task Handler
     const handleAssign = (newTask) => {
         assignTask({ ...newTask, assignedBy: currentUser.id });
-        alert('Task assigned successfully!');
+        showAlert('Task assigned successfully!', 'success');
     };
 
     return (

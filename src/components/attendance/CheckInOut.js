@@ -1,5 +1,25 @@
+import { useState } from 'react';
 
 export default function CheckInOut({ status, onCheckIn, onCheckOut, nfcId }) {
+    const [enteredId, setEnteredId] = useState('');
+    const [error, setError] = useState('');
+
+    const validateAndAction = (action) => {
+        if (!enteredId.trim()) {
+            setError('Please tap/enter NFC ID');
+            return;
+        }
+        if (enteredId.trim() !== nfcId) {
+            setError('❌ ID mismatch! Access Denied.');
+            return;
+        }
+        setError('');
+        setEnteredId('');
+        action();
+    };
+
+    const handleCheckIn = () => validateAndAction(onCheckIn);
+    const handleCheckOut = () => validateAndAction(onCheckOut);
     return (
         <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 transition-colors duration-300">
             <div className="flex justify-between items-center mb-6">
@@ -31,9 +51,23 @@ export default function CheckInOut({ status, onCheckIn, onCheckOut, nfcId }) {
                 </p>
 
                 <div className="w-full">
+                    {/* Manual NFC Input */}
+                    {(status === 'Not Started' || status === 'Checked In') && (
+                        <div className="mb-4">
+                            <input
+                                type="text"
+                                placeholder="Enter NFC ID (e.g. NFC003)"
+                                value={enteredId}
+                                onChange={(e) => { setEnteredId(e.target.value); setError(''); }}
+                                className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white text-center tracking-widest outline-none focus:border-blue-500 transition-colors"
+                            />
+                            {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+                        </div>
+                    )}
+
                     {status === 'Not Started' && (
                         <button
-                            onClick={onCheckIn}
+                            onClick={handleCheckIn}
                             className="w-full py-4 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-green-900/20 transform active:scale-95 transition-all flex items-center justify-center gap-3"
                         >
                             <span className="text-2xl">⚡</span> CHECK IN
@@ -42,7 +76,7 @@ export default function CheckInOut({ status, onCheckIn, onCheckOut, nfcId }) {
 
                     {status === 'Checked In' && (
                         <button
-                            onClick={onCheckOut}
+                            onClick={handleCheckOut}
                             className="w-full py-4 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-red-900/20 transform active:scale-95 transition-all flex items-center justify-center gap-3 animate-pulse"
                         >
                             <span className="text-2xl">👋</span> CHECK OUT

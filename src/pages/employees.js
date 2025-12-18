@@ -4,6 +4,8 @@ import Navbar from "../components/common/Navbar";
 import { useEmployees } from '../context/EmployeeContext';
 import { useAuth } from '../context/AuthContext';
 import { useAttendance } from '../context/AttendanceContext';
+import { useAlert } from '../context/AlertContext';
+import { useConfirm } from '../context/ConfirmContext';
 import { useRouter } from 'next/router';
 import EmployeeForm from '../components/employees/EmployeeForm';
 import EmployeeList from '../components/employees/EmployeeList';
@@ -13,6 +15,8 @@ export default function Employees() {
     const { currentUser, logout, loading } = useAuth();
     const { employees, addEmployee, updateEmployee, deleteEmployee } = useEmployees();
     const { markAttendance, currentAttendanceStatus } = useAttendance();
+    const { showAlert } = useAlert();
+    const { showConfirm } = useConfirm();
     const router = useRouter();
 
     const [isEditing, setIsEditing] = useState(null);
@@ -32,8 +36,10 @@ export default function Employees() {
             updateEmployee(isEditing, formData);
             setIsEditing(null);
             setInitialData(null);
+            showAlert('Employee updated successfully!', 'success');
         } else {
             addEmployee(formData);
+            showAlert('Employee added successfully!', 'success');
         }
     };
 
@@ -42,9 +48,15 @@ export default function Employees() {
         setInitialData(emp);
     };
 
-    const handleDelete = (id) => {
-        if (window.confirm('Are you sure you want to delete this employee?')) {
+    const handleDelete = async (id) => {
+        const confirmed = await showConfirm(
+            'Delete Employee?',
+            'Are you sure you want to delete this employee? This action cannot be undone.'
+        );
+
+        if (confirmed) {
             deleteEmployee(id);
+            showAlert('Employee deleted successfully!', 'success');
         }
     };
 

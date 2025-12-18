@@ -39,9 +39,19 @@ export default function AttendanceTable({ history, employees }) {
                                         const parseTime = (timeStr) => {
                                             const [time, modifier] = timeStr.split(' ');
                                             let [hours, minutes, seconds] = time.split(':');
-                                            if (hours === '12') hours = '00';
-                                            if (modifier === 'PM') hours = parseInt(hours, 10) + 12;
-                                            return new Date(`2000-01-01T${hours}:${minutes}:${seconds}`);
+
+                                            if (!seconds) seconds = '00'; // Handle missing seconds
+
+                                            let h = parseInt(hours, 10);
+                                            if (h === 12 && modifier === 'AM') h = 0;
+                                            if (h !== 12 && modifier === 'PM') h += 12;
+
+                                            // Ensure 2-digit format for ISO string
+                                            const hh = h.toString().padStart(2, '0');
+                                            const mm = minutes.toString().padStart(2, '0');
+                                            const ss = seconds.toString().padStart(2, '0');
+
+                                            return new Date(`2000-01-01T${hh}:${mm}:${ss}`);
                                         };
 
                                         try {

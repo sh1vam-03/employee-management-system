@@ -29,21 +29,22 @@ export default function Attendance() {
 
     // Filter logic
     const filteredHistory = attendanceHistory.filter(record => {
-        const matchDate = filterDate ? record.date === new Date(filterDate).toLocaleDateString() : true;
+        // Direct string comparison works because both are YYYY-MM-DD
+        const matchDate = filterDate ? record.date === filterDate : true;
 
         if (isAdminOrHR) {
             // Find the employee associated with this record
             const employee = employees.find(e => e.id === record.empId);
             // Only show records for regular Employees (not other Admins or HRs)
             const isEmployeeRole = employee?.role === 'Employee';
-            
+
             const matchEmp = filterEmp ? record.empId.includes(filterEmp) : true;
             return matchDate && matchEmp && isEmployeeRole;
         } else {
             // Employee only sees their own
             return record.empId === currentUser.id && matchDate;
         }
-    });
+    }).sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-zinc-900 pb-12 transition-colors duration-300">

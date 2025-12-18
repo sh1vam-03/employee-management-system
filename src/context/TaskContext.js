@@ -17,9 +17,18 @@ export function TaskProvider({ children }) {
         const load = () => {
             try {
                 const stored = localStorage.getItem('tasks');
-                if (stored) setTasks(JSON.parse(stored));
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    const uniqueNew = initialTasks.filter(init =>
+                        !parsed.some(p => p.id === init.id)
+                    );
+                    setTasks([...parsed, ...uniqueNew]);
+                } else {
+                    setTasks(initialTasks);
+                }
             } catch (e) {
                 console.error("Tasks load failed", e);
+                setTasks(initialTasks);
             } finally {
                 setLoading(false);
             }

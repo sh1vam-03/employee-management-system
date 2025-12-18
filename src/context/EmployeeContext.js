@@ -20,12 +20,23 @@ export function EmployeeProvider({ children }) {
 
     useEffect(() => {
         // Load state from localStorage on mount
+        // Load state from localStorage on mount
         const loadState = () => {
             try {
                 const storedEmployees = localStorage.getItem('employees');
-                if (storedEmployees) setEmployees(JSON.parse(storedEmployees));
+                if (storedEmployees) {
+                    const parsed = JSON.parse(storedEmployees);
+                    // Merge new initial employees if they don't exist in storage
+                    const uniqueNew = initialEmployees.filter(init =>
+                        !parsed.some(p => p.id === init.id)
+                    );
+                    setEmployees([...parsed, ...uniqueNew]);
+                } else {
+                    setEmployees(initialEmployees);
+                }
             } catch (error) {
                 console.error("Failed to load state from local storage:", error);
+                setEmployees(initialEmployees);
             } finally {
                 setLoading(false);
             }
