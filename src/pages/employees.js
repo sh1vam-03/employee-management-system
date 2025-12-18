@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import EmployeeForm from '../components/employees/EmployeeForm';
 import EmployeeList from '../components/employees/EmployeeList';
 import CheckInOut from '../components/attendance/CheckInOut';
+import { FiUsers } from 'react-icons/fi';
 
 export default function Employees() {
     const { currentUser, logout, loading } = useAuth();
@@ -112,7 +113,7 @@ export default function Employees() {
                             <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 transition-colors duration-300">
                                 <div className="flex justify-between items-center mb-6">
                                     <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                                        <span className="text-2xl">👥</span> Employee Management
+                                        <FiUsers className="text-2xl" /> <span>Employee Management</span>
                                     </h2>
                                     <span className="bg-gray-100 dark:bg-zinc-700 text-gray-500 dark:text-zinc-400 text-xs px-2 py-1 rounded">Admin & HR Access</span>
                                 </div>

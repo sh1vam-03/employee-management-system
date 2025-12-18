@@ -7,6 +7,8 @@ import { useAlert } from '../context/AlertContext';
 import { useRouter } from 'next/router';
 import { generatePaySlip } from '../utils/pdfGenerator';
 import { calculateNetSalary } from '../utils/salaryCalculator';
+import { FiInbox } from 'react-icons/fi';
+import { FaRupeeSign } from 'react-icons/fa';
 
 export default function Payroll() {
     const { currentUser, loading: authLoading } = useAuth();
@@ -132,7 +134,8 @@ export default function Payroll() {
                                 </>
                             ) : (
                                 <>
-                                    <span>💰</span> Process Current Month Payroll
+                                    <FaRupeeSign className="text-xl" />
+                                    <span>Process Current Month Payroll</span>
                                 </>
                             )}
                         </button>
@@ -187,7 +190,9 @@ export default function Payroll() {
                         </table>
                     ) : (
                         <div className="p-16 flex flex-col items-center justify-center text-center">
-                            <div className="w-16 h-16 bg-gray-100 dark:bg-zinc-700 rounded-full flex items-center justify-center mb-4 text-3xl">📭</div>
+                            <div className="w-16 h-16 bg-gray-100 dark:bg-zinc-700 rounded-full flex items-center justify-center mb-4 text-gray-400 dark:text-zinc-400">
+                                <FiInbox className="text-3xl" />
+                            </div>
                             <h3 className="text-lg font-bold text-gray-700 dark:text-zinc-200 mb-2">No Payroll Records</h3>
                             <p className="text-gray-500 dark:text-zinc-400 max-w-sm">
                                 {isAdminOrHR

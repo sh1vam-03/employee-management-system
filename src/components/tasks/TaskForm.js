@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FiEdit } from 'react-icons/fi';
 
 export default function TaskForm({ employees, onAssign }) {
     const [newTask, setNewTask] = useState({ title: '', assignedTo: '', dueDate: '', status: 'Open' });
@@ -12,7 +13,7 @@ export default function TaskForm({ employees, onAssign }) {
     return (
         <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 sticky top-6 transition-colors duration-300">
             <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                <span>📝</span> Assign New Task
+                <FiEdit /> <span>Assign New Task</span>
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { FiSmartphone, FiRadio, FiLogIn, FiLogOut, FiCheckCircle } from 'react-icons/fi';
 
 export default function CheckInOut({ status, onCheckIn, onCheckOut, nfcId }) {
     const [enteredId, setEnteredId] = useState('');
@@ -24,7 +25,7 @@ export default function CheckInOut({ status, onCheckIn, onCheckOut, nfcId }) {
         <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 transition-colors duration-300">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <span className="text-2xl">📱</span> NFC Access
+                    <FiSmartphone className="text-2xl" /> <span>NFC Access</span>
                 </h2>
                 <span className="bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 text-xs px-2 py-1 rounded">Active</span>
             </div>
@@ -41,7 +42,7 @@ export default function CheckInOut({ status, onCheckIn, onCheckOut, nfcId }) {
 
                 <div className="relative mb-8">
                     <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center relative z-10 border border-white/10 group-hover:border-white/30 transition-colors">
-                        <span className="text-3xl filter drop-shadow-md">📡</span>
+                        <FiRadio className="text-3xl filter drop-shadow-md" />
                     </div>
                     <div className="absolute top-0 left-0 w-full h-full bg-blue-500/20 rounded-full animate-ping"></div>
                 </div>
@@ -70,7 +71,7 @@ export default function CheckInOut({ status, onCheckIn, onCheckOut, nfcId }) {
                             onClick={handleCheckIn}
                             className="w-full py-4 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-green-900/20 transform active:scale-95 transition-all flex items-center justify-center gap-3"
                         >
-                            <span className="text-2xl">⚡</span> CHECK IN
+                            <FiLogIn className="text-2xl" /> CHECK IN
                         </button>
                     )}
 
@@ -79,7 +80,7 @@ export default function CheckInOut({ status, onCheckIn, onCheckOut, nfcId }) {
                             onClick={handleCheckOut}
                             className="w-full py-4 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-red-900/20 transform active:scale-95 transition-all flex items-center justify-center gap-3 animate-pulse"
                         >
-                            <span className="text-2xl">👋</span> CHECK OUT
+                            <FiLogOut className="text-2xl" /> CHECK OUT
                         </button>
                     )}
 
@@ -88,7 +89,7 @@ export default function CheckInOut({ status, onCheckIn, onCheckOut, nfcId }) {
                             disabled
                             className="w-full py-4 bg-gray-600 text-gray-400 rounded-xl font-bold text-lg cursor-not-allowed flex items-center justify-center gap-3 border border-gray-500/50"
                         >
-                            <span className="text-2xl">✅</span> SHIFT COMPLETE
+                            <FiCheckCircle className="text-2xl" /> SHIFT COMPLETE
                         </button>
                     )}
                 </div>
