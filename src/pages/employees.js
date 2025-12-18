@@ -108,7 +108,7 @@ export default function Employees() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* --- LEFT COLUMN: MANAGEMENT (Admin & HR) --- */}
                     {(isAdmin || isHR) && (
-                        <div className="lg:col-span-2 space-y-8">
+                        <div className="lg:col-span-3 space-y-8">
                             <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 transition-colors duration-300">
                                 <div className="flex justify-between items-center mb-6">
                                     <h2 className="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
@@ -135,7 +135,7 @@ export default function Employees() {
 
                     {/* --- RIGHT COLUMN: NFC ATTENDANCE (Employee ONLY) --- */}
                     {isEmployee && (
-                        <div className="lg:col-span-1">
+                        <div className="lg:col-span-1 lg:col-start-2">
                             <div className="sticky top-6">
                                 <CheckInOut
                                     status={currentAttendanceStatus}
