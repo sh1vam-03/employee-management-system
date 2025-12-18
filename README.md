@@ -71,7 +71,7 @@ src/
 ### Installation
 1.  Clone the repository:
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/sh1vam-03/employee-management-system.git
     cd employee-management-system
     ```
 2.  Install dependencies:
