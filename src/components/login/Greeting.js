@@ -30,7 +30,7 @@ export default function Greeting() {
                 <p
                     className={`text-lg md:text-xl text-zinc-700 dark:text-zinc-300 ${geistMono.variable} font-mono`}
                 >
-                    This is a Assignment for React Developer (Internship).
+                    This is a Assignment of React Developer (Internship).
                 </p>
             </div>
         </div>
