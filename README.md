@@ -1,7 +1,6 @@
 # Employee Management System (EMS)
 
-## 🚀 Live Demo
-[**Live Application**](https://employee-management-system-nine-navy.vercel.app)
+## 🚀 Live Demo : [Live Application](https://employee-management-system-nine-navy.vercel.app)
 
 ## 📌 Overview
 This project is a **Basic Employee Management System (EMS)** developed as part of the **Internship Selection Assignment** for Obzen Technolabs.
@@ -180,7 +179,6 @@ Open: http://localhost:3000
 
 ## 👨‍💻 Author
 **Balaji Bokare**
-Frontend / Full Stack Developer
 
 ## 📬 Submission Note
 This project was developed specifically for internship evaluation and focuses on clarity, correctness, and practical implementation within a limited timeframe.
