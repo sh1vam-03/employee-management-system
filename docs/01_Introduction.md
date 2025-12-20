@@ -4,7 +4,7 @@
 This document serves as the primary reference guide for the **Employee Management System (EMS)**. It outlines the project's scope, functional requirements, and intended audience, providing a foundational understanding for developers, stakeholders, and evaluators.
 
 ## 1.2 Product Overview
-The Employee Management System is a Single Page Application (SPA) designed to digitize core HR administrative tasks. It replaces manual spreadsheet-based tracking with an interactive, role-based digital interface. 
+The Employee Management System is a designed to digitize core HR administrative tasks. It replaces manual spreadsheet-based tracking with an interactive, role-based digital interface. 
 
 The system focuses on simplicity and speed, utilizing local browser storage to demonstrate state management capabilities without the overhead of a backend infrastructure.
 
